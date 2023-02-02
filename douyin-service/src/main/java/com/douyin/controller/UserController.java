@@ -56,6 +56,9 @@ public class UserController {
      */
     @GetMapping("/")
     public UserInfoResponseVo getUserInfo(@RequestParam("user_id") Long userId,@RequestParam("token")String token){
+        if(userId==null){
+            System.out.println("...");
+        }
        return null;
     }
 }
