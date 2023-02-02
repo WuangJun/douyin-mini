@@ -1,0 +1,3 @@
+# Project exclude paths
+/douyin-common/target/
+/douyin-service/target/
