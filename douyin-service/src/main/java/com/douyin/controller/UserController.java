@@ -1,24 +1,23 @@
 package com.douyin.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.douyin.common.vo.UserInfoResponseVo;
-import com.douyin.common.vo.UserResponseVo;
-import com.douyin.entity.User;
-import com.douyin.exception.CommonException;
+import com.douyin.aspect.ClientLogin;
+import com.douyin.common.dto.LoginUserDTO;
+import com.douyin.common.dto.UserDTO;
+import com.douyin.common.vo.UserInfoResponseVO;
+import com.douyin.common.vo.UserResponseVO;
+import com.douyin.manager.UserManage;
 import com.douyin.service.UserService;
-import com.douyin.utils.JwtUtils;
-import com.douyin.utils.MD5Utils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.regex.Pattern;
 
 /**
  * Author:WJ
  * Date:2023/2/1 13:29
  * Description:<>
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -26,15 +25,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserManage userManage;
+
     /**
+     *
      * 用户注册
      * @param username
      * @param password
      * @return
      */
     @PostMapping("/register")
-    public UserResponseVo register(@RequestParam("username") String username, @RequestParam("password") String password) {
-        return userService.register(username, password);
+    public UserResponseVO register(@RequestParam("username") String username, @RequestParam("password") String password) {
+        return userManage.register(username, password);
     }
 
     /**
@@ -44,8 +47,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public UserResponseVo login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        return userService.login(username, password);
+    public UserResponseVO login(@RequestParam("username") String username, @RequestParam("password") String password) {
+        return userManage.login(username, password);
     }
 
     /**
@@ -54,11 +57,11 @@ public class UserController {
      * @param token
      * @return
      */
+    @ClientLogin
     @GetMapping("/")
-    public UserInfoResponseVo getUserInfo(@RequestParam("user_id") Long userId,@RequestParam("token")String token){
-        if(userId==null){
-            System.out.println("...");
-        }
-       return null;
+    public UserInfoResponseVO getUserInfo(@RequestParam("user_id") Long userId, @RequestParam("token")String token, LoginUserDTO loginUserDTO){
+        UserDTO userDto = new UserDTO();
+        BeanUtils.copyProperties(loginUserDTO,userDto);
+        return UserInfoResponseVO.success(userDto);
     }
 }

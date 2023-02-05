@@ -2,16 +2,14 @@ package com.douyin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.douyin.common.vo.UserResponseVo;
+import com.douyin.common.dto.UserDTO;
 import com.douyin.entity.User;
+import com.douyin.exception.CommonException;
 import com.douyin.mapper.UserMapper;
 import com.douyin.service.UserService;
-import com.douyin.utils.JwtUtils;
-import com.douyin.utils.MD5Utils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.regex.Pattern;
+import org.springframework.util.StringUtils;
 
 /**
  * Author:WJ
@@ -23,47 +21,40 @@ import java.util.regex.Pattern;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    @Transactional
-    public UserResponseVo register(String username, String password) {
-        // 正则表达式验证邮箱合法性
-        String pattern = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
-        if (!Pattern.matches(pattern, username)) {
-            return UserResponseVo.fail("请输入正确的邮箱");
+    public Long add(UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new CommonException("用户信息为空");
         }
-        // 验证该邮箱是否已经注册过了
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUsername, username);
-        User user = this.getOne(queryWrapper);
-
-        if (user == null) {
-            String pwdMD5 = MD5Utils.parseStrToMd5L32(password);
-            user = new User();
-            user.setUsername(username);
-            user.setPassword(pwdMD5);
-            this.save(user);
-            String token = JwtUtils.createToken(user.getId(), username);
-            return UserResponseVo.success(user.getId(), token);
-        } else {
-            return UserResponseVo.fail("注册失败，该邮箱已被注册");
-        }
+        User user = new User();
+        BeanUtils.copyProperties(userDTO, user);
+        this.save(user);
+        return user.getId();
     }
 
     @Override
-    public UserResponseVo login(String username, String password) {
-        // 1.查询是否存在该用户
+    public UserDTO getByUsername(String username) {
+        if (StringUtils.isEmpty(username)) {
+            throw new CommonException("用户名为空");
+        }
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
         User user = this.getOne(queryWrapper);
         if (user == null) {
-            return UserResponseVo.fail("登录失败，该用户不存在");
+            return null;
         }
-        // 2.验证密码是否正确
-        String pwMD5 = MD5Utils.parseStrToMd5L32(password);
-        if (user.getPassword().equals(pwMD5)) {
-            String token = JwtUtils.createToken(Long.valueOf(user.getId()), username);
-            return UserResponseVo.success(user.getId(), token);
-        } else {
-            return UserResponseVo.fail("登录失败，密码不正确");
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        return userDTO;
+    }
+
+    @Override
+    public UserDTO getUserById(Long userId) {
+        if (userId == null) {
+            throw new CommonException("用户ID为空");
         }
+        User user = this.getById(userId);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        return userDTO;
     }
 }
