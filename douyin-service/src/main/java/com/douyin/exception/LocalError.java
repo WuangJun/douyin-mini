@@ -1,7 +1,7 @@
 package com.douyin.exception;
 
 /**
- * @author caiyihua
+ * @author wangjun
  */
 public interface LocalError {
     /**
