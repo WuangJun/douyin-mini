@@ -1,7 +1,9 @@
 package com.douyin.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.douyin.aspect.ClientLogin;
-import com.douyin.common.dto.LoginUserDTO;
+import com.douyin.common.dto.UserLoginDTO;
 import com.douyin.common.dto.UserDTO;
 import com.douyin.common.vo.UserInfoResponseVO;
 import com.douyin.common.vo.UserResponseVO;
@@ -29,8 +31,8 @@ public class UserController {
     private UserManage userManage;
 
     /**
-     *
      * 用户注册
+     *
      * @param username
      * @param password
      * @return
@@ -42,6 +44,7 @@ public class UserController {
 
     /**
      * 用户登录
+     *
      * @param username
      * @param password
      * @return
@@ -53,15 +56,17 @@ public class UserController {
 
     /**
      * 用户信息查询
+     *
      * @param userId
      * @param token
      * @return
      */
     @ClientLogin
     @GetMapping("/")
-    public UserInfoResponseVO getUserInfo(@RequestParam("user_id") Long userId, @RequestParam("token")String token, LoginUserDTO loginUserDTO){
+    public UserInfoResponseVO getUserInfo(@RequestParam("user_id") Long userId, @RequestParam("token") String token, UserLoginDTO userLoginDTO) {
+        log.info("开始查询用户{}的信息", userLoginDTO.getUsername());
         UserDTO userDto = new UserDTO();
-        BeanUtils.copyProperties(loginUserDTO,userDto);
+        BeanUtils.copyProperties(userLoginDTO, userDto);
         return UserInfoResponseVO.success(userDto);
     }
 }

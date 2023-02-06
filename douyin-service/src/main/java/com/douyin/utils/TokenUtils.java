@@ -5,7 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.douyin.common.dto.LoginUserDTO;
+import com.douyin.common.dto.UserLoginDTO;
 import org.springframework.util.StringUtils;
 
 
@@ -25,7 +25,7 @@ public class TokenUtils {
     // token秘钥
     private static final String TOKEN_SECRET = "ZCfasfhuaUUHufguGuwu2020BQWE";
 
-    public static String token(LoginUserDTO loginUserDTO) {
+    public static String token(UserLoginDTO userLoginDTO) {
 
         String token = "";
         try {
@@ -40,7 +40,7 @@ public class TokenUtils {
             // 携带username，password信息，生成签名
             token = JWT.create()
                     .withHeader(header)
-                    .withClaim("loginUser", JSON.toJSONString(loginUserDTO)).withExpiresAt(date)
+                    .withClaim("loginUser", JSON.toJSONString(userLoginDTO)).withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,11 +69,11 @@ public class TokenUtils {
         }
     }
 
-    public static LoginUserDTO getLoginUserDTO(String token) {
+    public static UserLoginDTO getLoginUserDTO(String token) {
         if (StringUtils.isEmpty(token)) return null;
         Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT jwt = verifier.verify(token);
-        return JSON.parseObject(jwt.getClaims().get("loginUser").asString(), LoginUserDTO.class);
+        return JSON.parseObject(jwt.getClaims().get("loginUser").asString(), UserLoginDTO.class);
     }
 }

@@ -12,23 +12,19 @@ import lombok.Data;
 
 @Data
 
-public class UserInfoResponseVO extends BaseResponseVO{
+public class UserInfoResponseVO extends BaseResponseVO {
 
 
     // TODO: 2023/2/5 WJ user中少了关注相关参数，需验证客户端能否正确渲染
     private UserDTO user;
 
-    public UserInfoResponseVO(Integer status_code, String status_msg, UserDTO userDTO){
-        super(status_code,status_msg);
-    }
-    public UserInfoResponseVO(Integer status_code, String status_msg){
-        super(status_code,status_msg);
-    }
-    public static UserInfoResponseVO success(UserDTO userDto){
-        return new UserInfoResponseVO(0,"成功",userDto);
+    public UserInfoResponseVO(Integer status_code, String status_msg, UserDTO userDTO) {
+        super(status_code, status_msg);
+        this.user = userDTO;
     }
 
-    public static UserInfoResponseVO fail(String msg) {
-        return new UserInfoResponseVO(-1,msg);
+    public static UserInfoResponseVO success(UserDTO userDto) {
+        return new UserInfoResponseVO(0, "成功", userDto);
     }
+
 }

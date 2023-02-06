@@ -8,7 +8,7 @@ import lombok.Data;
  * Description:<>
  */
 @Data
-public class LoginUserDTO {
+public class UserLoginDTO {
     /**
      *用户id
      */

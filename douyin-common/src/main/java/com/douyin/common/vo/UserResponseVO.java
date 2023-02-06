@@ -12,7 +12,7 @@ import lombok.Data;
  */
 
 @Data
-public class UserResponseVO extends BaseResponseVO{
+public class UserResponseVO extends BaseResponseVO {
 
     /**
      * 用户id
@@ -24,22 +24,20 @@ public class UserResponseVO extends BaseResponseVO{
      */
     private String token;
 
-    public UserResponseVO(Integer status_code, String status_msg){
-        super(status_code,status_msg);
-    }
-    public UserResponseVO(Integer status_code, String status_msg, Long userId,String token){
-        super(status_code,status_msg);
-        this.user_id=userId;
-        this.token=token;
+    public UserResponseVO(Integer status_code, String status_msg) {
+        super(status_code, status_msg);
     }
 
-    public static UserResponseVO success(Long userId, String token){
-        return new UserResponseVO(Constant.SUCCESS_CODE,"成功",userId,token);
+    public UserResponseVO(Integer status_code, String status_msg, Long userId, String token) {
+        super(status_code, status_msg);
+        this.user_id = userId;
+        this.token = token;
     }
 
-    public static UserResponseVO fail(String msg) {
-        return new UserResponseVO(Constant.FAIL_CODE,msg);
+    public static UserResponseVO success(Long userId, String token) {
+        return new UserResponseVO(Constant.SUCCESS_CODE, "成功", userId, token);
     }
+
 }
 
 
