@@ -1,5 +1,6 @@
 package com.douyin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.Date;
  */
 
 @Data
+@TableName("dy_video_favorite")
 public class Favorite implements Serializable {
 
     private Long id;
