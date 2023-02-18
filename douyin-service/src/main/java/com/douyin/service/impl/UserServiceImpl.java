@@ -3,6 +3,7 @@ package com.douyin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.douyin.common.dto.UserDTO;
+import com.douyin.common.vo.UserVO;
 import com.douyin.entity.User;
 import com.douyin.exception.CommonException;
 import com.douyin.mapper.UserMapper;
@@ -10,6 +11,8 @@ import com.douyin.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Date;
 
 /**
  * Author:WJ
@@ -34,6 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserDTO getByUsername(String username) {
         if (StringUtils.isEmpty(username)) {
+
             throw new CommonException("用户名为空");
         }
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -56,5 +60,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;
+    }
+
+    @Override
+    public UserVO getUserVOById(Long userId) {
+        if (userId == null) {
+            throw new CommonException("用户ID为空");
+        }
+        User user = this.getById(userId);
+        UserVO userVO = new UserVO();
+        userVO.setId(user.getId());
+        userVO.setName(user.getUsername());
+        userVO.setFollow_count(0);
+        userVO.setFollower_count(0);
+        userVO.set_follow(false);
+        return userVO;
     }
 }

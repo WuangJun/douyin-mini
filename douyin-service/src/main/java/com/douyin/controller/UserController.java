@@ -1,13 +1,12 @@
 package com.douyin.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.douyin.aspect.ClientLogin;
 import com.douyin.common.dto.UserLoginDTO;
 import com.douyin.common.dto.UserDTO;
 import com.douyin.common.vo.UserInfoResponseVO;
 import com.douyin.common.vo.UserResponseVO;
-import com.douyin.manager.UserManage;
+import com.douyin.common.vo.UserVO;
+import com.douyin.manager.UserManager;
 import com.douyin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +27,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserManage userManage;
+    private UserManager userManager;
 
     /**
      * 用户注册
@@ -39,7 +38,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public UserResponseVO register(@RequestParam("username") String username, @RequestParam("password") String password) {
-        return userManage.register(username, password);
+        return userManager.register(username, password);
     }
 
     /**
@@ -51,7 +50,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public UserResponseVO login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        return userManage.login(username, password);
+        return userManager.login(username, password);
     }
 
     /**
@@ -65,8 +64,9 @@ public class UserController {
     @GetMapping("/")
     public UserInfoResponseVO getUserInfo(@RequestParam("user_id") Long userId, @RequestParam("token") String token, UserLoginDTO userLoginDTO) {
         log.info("开始查询用户{}的信息", userLoginDTO.getUsername());
-        UserDTO userDto = new UserDTO();
-        BeanUtils.copyProperties(userLoginDTO, userDto);
-        return UserInfoResponseVO.success(userDto);
+        UserVO userVo = new UserVO();
+        userVo.setId(userLoginDTO.getId());
+        userVo.setName(userLoginDTO.getUsername());
+        return UserInfoResponseVO.success(userVo);
     }
 }

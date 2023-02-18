@@ -2,6 +2,7 @@ package com.douyin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.douyin.common.dto.UserDTO;
+import com.douyin.common.vo.UserVO;
 import com.douyin.entity.User;
 
 public interface UserService extends IService<User> {
@@ -24,4 +25,6 @@ public interface UserService extends IService<User> {
      * @return
      */
     public UserDTO getUserById(Long userId);
+
+    public UserVO getUserVOById(Long userId);
 }

@@ -1,12 +1,11 @@
 package com.douyin.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.douyin.common.dto.AuthorDTO;
-import com.douyin.common.dto.UserDTO;
 import com.douyin.common.dto.UserLoginDTO;
-import com.douyin.common.dto.VideoDTO;
 import com.douyin.common.vo.FavoriteListResponseVO;
 import com.douyin.common.vo.FavoriteResponseVO;
+import com.douyin.common.vo.UserVO;
+import com.douyin.common.vo.VideoVO;
 import com.douyin.entity.Favorite;
 import com.douyin.entity.Video;
 import com.douyin.exception.CommonException;
@@ -15,7 +14,6 @@ import com.douyin.service.UserService;
 import com.douyin.service.VideoService;
 import com.douyin.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,25 +132,17 @@ public class FavoriteManage {
         queryWrapper.eq("favorite_user_id", userId).eq("is_deleted", 0);
         List<Favorite> favoriteList = favoriteService.list(queryWrapper);
 
-        List<VideoDTO> videoList = new ArrayList<>();
+        List<VideoVO> videoList = new ArrayList<>();
 
         for (Favorite favorite : favoriteList) {
             Long videoId = favorite.getVideoId();
             Video video = videoService.getById(videoId);
-            VideoDTO videoDTO = new VideoDTO();
-            BeanUtils.copyProperties(video, videoDTO);
-            videoDTO.setIsFavorite(true);
-            UserDTO userDTO = userService.getUserById(video.getAuthorId());
-            // 有些字段数据库中未设置
-            AuthorDTO authorDTO = new AuthorDTO();
-            authorDTO.setId(userDTO.getId());
-            authorDTO.setName(userDTO.getUsername());
-            authorDTO.setFollowCount(0);
-            authorDTO.setFollowerCount(0);
-            authorDTO.setIsFollow(false);
+            VideoVO videoVO = VideoManager.videoConvertToVideoVO(video);
 
-            videoDTO.setAuthor(authorDTO);
-            videoList.add(videoDTO);
+            videoVO.set_favorite(true);
+            UserVO userVO = userService.getUserVOById(video.getAuthorId());
+            videoVO.setUser(userVO);
+            videoList.add(videoVO);
         }
 
         return FavoriteListResponseVO.success(videoList);

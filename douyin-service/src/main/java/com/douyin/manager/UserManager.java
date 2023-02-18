@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Service
-public class UserManage {
+public class UserManager {
 
     @Autowired
     private UserService userService;
@@ -79,19 +79,19 @@ public class UserManage {
         log.info("用户{}进行登录", username);
         // 基础参数校验
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            // return UserResponseVO.fail("请输入账号和密码");
+            throw new CommonException("请输入账号和密码");
         }
 
         // 1.查询是否存在该用户
         UserDTO userDTO = userService.getByUsername(username);
         if (userDTO == null) {
-            // return UserResponseVO.fail("登录失败，该用户不存在");
+            throw new CommonException("登录失败，该用户不存在");
         }
         // TODO: 2023/2/5 客户端密码已加密，则不用加密处理，否则先加密加盐处理
         // 2.验证密码是否正确
         String pwdMD5 = MD5Utils.parseStrToMd5L32(password);
         if (!userDTO.getPassword().equals(pwdMD5)) {
-            // return UserResponseVO.fail("登录失败，密码不正确");
+            throw new CommonException("登录失败，密码不正确");
         }
 
         UserLoginDTO userLoginDTO = genLoginUserDTO(username, userDTO.getId());
