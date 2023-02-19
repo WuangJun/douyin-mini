@@ -9,7 +9,7 @@ CREATE TABLE `dy_user` (
   `is_deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除标识。1：此记录已经删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_username` (`username`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表，存储用户登录信息';dy_user
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表，存储用户登录信息';
 
 DROP TABLE IF EXISTS `dy_video`;
 CREATE TABLE `dy_video` (
