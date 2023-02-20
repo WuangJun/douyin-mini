@@ -1,6 +1,6 @@
 package com.douyin.common.vo;
 
-import com.douyin.common.contants.Constant;
+import com.douyin.common.constants.StateConstant;
 import lombok.Data;
 
 import java.util.List;
@@ -15,19 +15,19 @@ import java.util.List;
 @Data
 public class FavoriteListResponseVO extends BaseResponseVO{
 
-    private List<VideoVO> videoList;
+    private List<VideoVO> video_list;
 
 
     public FavoriteListResponseVO(Integer status_code, String status_msg) {
         super(status_code, status_msg);
     }
 
-    public FavoriteListResponseVO(Integer status_code, String status_msg, List<VideoVO> videoList) {
+    public FavoriteListResponseVO(Integer status_code, String status_msg, List<VideoVO> video_list) {
         super(status_code, status_msg);
-        this.videoList = videoList;
+        this.video_list = video_list;
     }
 
     public static FavoriteListResponseVO success(List<VideoVO> videoList) {
-        return new FavoriteListResponseVO(Constant.SUCCESS_CODE, "成功", videoList);
+        return new FavoriteListResponseVO(StateConstant.SUCCESS_CODE, "成功", videoList);
     }
 }

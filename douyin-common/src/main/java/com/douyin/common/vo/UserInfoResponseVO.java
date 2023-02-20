@@ -6,9 +6,8 @@ import lombok.Data;
 /**
  * Author:WJ
  * Date:2023/2/1 23:54
- * Description:<>
+ * Description:<查询用户信息的返回对象>
  */
-
 
 @Data
 

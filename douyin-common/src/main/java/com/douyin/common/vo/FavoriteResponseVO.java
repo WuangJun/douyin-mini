@@ -1,6 +1,6 @@
 package com.douyin.common.vo;
 
-import com.douyin.common.contants.Constant;
+import com.douyin.common.constants.StateConstant;
 import lombok.Data;
 
 /**
@@ -18,7 +18,7 @@ public class FavoriteResponseVO extends BaseResponseVO {
     }
 
     public static FavoriteResponseVO success() {
-        return new FavoriteResponseVO(Constant.SUCCESS_CODE, "成功");
+        return new FavoriteResponseVO(StateConstant.SUCCESS_CODE, "成功");
     }
 
 }

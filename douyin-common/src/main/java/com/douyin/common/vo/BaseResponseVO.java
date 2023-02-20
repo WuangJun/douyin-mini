@@ -1,6 +1,6 @@
 package com.douyin.common.vo;
 
-import lombok.Builder;
+import com.douyin.common.constants.StateConstant;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Author:WJ
  * Date:2023/2/5 17:10
- * Description:<>
+ * Description:<返回到前端的基础接口>
  */
 
 @Data
@@ -30,4 +30,7 @@ public class BaseResponseVO implements Serializable {
         this.status_msg = msg;
     }
 
+    public static BaseResponseVO success() {
+        return new BaseResponseVO(StateConstant.SUCCESS_CODE, "成功");
+    }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface VideoService extends IService<Video> {
 
     List<Video> getPublishVideoList(Date latestTime);
+
+    void updateFavoriteCountById(Integer flag,Long videoId);
 }

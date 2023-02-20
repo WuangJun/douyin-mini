@@ -21,7 +21,7 @@ public class DateUtils {
      * @param longtime
      * @return
      */
-    public static Date getTimeYMDHHmmss(long longtime) throws ParseException {
+    public static Date getLong2Date(long longtime) throws ParseException {
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //long转Date
         Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sd.format(new Date(longtime)));
@@ -29,6 +29,10 @@ public class DateUtils {
 
     }
 
+    public static Long getDate2Long(Date date) throws ParseException {
+        String dateString = getcst(date);
+        return getLongDate(dateString);
+    }
     /**
      * 将cst时间格式转化为正常日期
      *

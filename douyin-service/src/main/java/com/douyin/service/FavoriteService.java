@@ -6,4 +6,6 @@ import com.douyin.entity.Favorite;
 public interface FavoriteService extends IService<Favorite> {
 
     Favorite getByUserIdAndVideoId(Long userId, String videoId);
+
+    Integer getVideoFavoriteCountById(Long videoId);
 }

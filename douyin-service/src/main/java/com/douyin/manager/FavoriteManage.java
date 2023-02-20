@@ -91,6 +91,8 @@ public class FavoriteManage {
                     throw new CommonException("请勿重复点赞");
                 }
             }
+            //更新视频点赞数
+            videoService.updateFavoriteCountById(1,video.getId());
         // 用户取消点赞
         } else if (actionType.equals("2")) {
             // 若favorite表中有点赞记录
@@ -106,6 +108,8 @@ public class FavoriteManage {
             } else {
                 throw new CommonException("该视频还未点赞，无法取消");
             }
+            //更新视频点赞数
+            videoService.updateFavoriteCountById(-1,video.getId());
         }
         return FavoriteResponseVO.success();
     }
@@ -132,18 +136,26 @@ public class FavoriteManage {
         queryWrapper.eq("favorite_user_id", userId).eq("is_deleted", 0);
         List<Favorite> favoriteList = favoriteService.list(queryWrapper);
 
+        if (favoriteList.isEmpty()){
+            log.info("当前没有视频信息！");
+            return FavoriteListResponseVO.success(new ArrayList<>());
+        }
         List<VideoVO> videoList = new ArrayList<>();
 
         for (Favorite favorite : favoriteList) {
             Long videoId = favorite.getVideoId();
             Video video = videoService.getById(videoId);
+            if(video==null){
+                throw new CommonException("该视频已被删除");
+            }
             VideoVO videoVO = VideoManager.videoConvertToVideoVO(video);
 
             videoVO.set_favorite(true);
             UserVO userVO = userService.getUserVOById(video.getAuthorId());
-            videoVO.setUser(userVO);
+            videoVO.setAuthor(userVO);
             videoList.add(videoVO);
         }
+        log.info("获取喜爱视频列表成功！！！！！！！！！！！！");
 
         return FavoriteListResponseVO.success(videoList);
     }

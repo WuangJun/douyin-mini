@@ -1,14 +1,14 @@
 package com.douyin.common.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.douyin.common.contants.Constant;
+import com.douyin.common.constants.StateConstant;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 /**
  * Author:WJ
  * Date:2023/2/1 23:30
- * Description:<>
+ * Description:<user接口的返回对象>
  */
 
 @Data
@@ -35,7 +35,7 @@ public class UserResponseVO extends BaseResponseVO {
     }
 
     public static UserResponseVO success(Long userId, String token) {
-        return new UserResponseVO(Constant.SUCCESS_CODE, "成功", userId, token);
+        return new UserResponseVO(StateConstant.SUCCESS_CODE, "成功", userId, token);
     }
 
 }

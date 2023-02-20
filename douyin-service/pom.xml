@@ -59,6 +59,34 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
+        <!--        处理视频需要用的依赖-->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>org.bytedeco.javacpp-presets</groupId>-->
+        <!--    <artifactId>opencv-platform</artifactId>-->
+        <!--    <version>3.4.1-1.4.1</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>ffmpeg-platform</artifactId>
+            <version>3.4.2-1.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>

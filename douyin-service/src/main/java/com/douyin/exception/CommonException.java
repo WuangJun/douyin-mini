@@ -1,6 +1,6 @@
 package com.douyin.exception;
 
-import com.douyin.common.contants.Constant;
+import com.douyin.common.constants.StateConstant;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,7 +25,7 @@ public class CommonException extends RuntimeException implements LocalError {
 
     public CommonException(String message) {
         super();
-        this.status_code = Constant.FAIL_CODE;
+        this.status_code = StateConstant.FAIL_CODE;
         this.status_msg = message;
         this.params = null;
     }
