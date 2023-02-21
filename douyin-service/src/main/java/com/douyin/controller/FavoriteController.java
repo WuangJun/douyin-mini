@@ -1,5 +1,7 @@
 package com.douyin.controller;
 
+import com.douyin.aspect.ClientLogin;
+import com.douyin.common.dto.UserLoginDTO;
 import com.douyin.common.vo.FavoriteListResponseVO;
 import com.douyin.common.vo.FavoriteResponseVO;
 import com.douyin.common.vo.UserResponseVO;
@@ -31,12 +33,13 @@ public class FavoriteController {
      * @param actionType
      * @return
      */
-    @PostMapping("/action")
+    @ClientLogin
+    @PostMapping("/action/")
     public FavoriteResponseVO favoriteAction(@RequestParam("token") String token,
-                                         @RequestParam("video_id") String videoId,
-                                         @RequestParam("action_type") String actionType
-    ) {
-        return favoriteManage.action(token, videoId, actionType);
+                                         @RequestParam("video_id") Long videoId,
+                                         @RequestParam("action_type") Integer actionType,
+                                             UserLoginDTO userLoginDTO) {
+        return favoriteManage.action(userLoginDTO.getId(), videoId, actionType);
     }
 
     /**
@@ -46,10 +49,11 @@ public class FavoriteController {
      * @param userId
      * @return
      */
-    @GetMapping("/list")
+    @ClientLogin
+    @GetMapping("/list/")
     public FavoriteListResponseVO favoriteList(@RequestParam("token") String token,
-                                               @RequestParam("user_id") String userId) {
+                                               @RequestParam("user_id") Long userId) {
 
-        return favoriteManage.list(token, userId);
+        return favoriteManage.list(userId);
     }
 }

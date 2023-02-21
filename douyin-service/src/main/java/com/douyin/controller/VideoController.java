@@ -9,7 +9,9 @@ import com.douyin.common.vo.VideoVO;
 import com.douyin.entity.Video;
 import com.douyin.exception.CommonException;
 import com.douyin.manager.VideoManager;
+import com.douyin.service.UserService;
 import com.douyin.service.VideoService;
+import com.douyin.utils.AliOSSUtils;
 import com.douyin.utils.DateUtils;
 import com.douyin.utils.TokenUtils;
 import com.douyin.utils.VideoUtils;
@@ -39,6 +41,9 @@ public class VideoController {
 
     @Autowired
     private VideoService videoService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 获取视频流
@@ -79,7 +84,7 @@ public class VideoController {
      * @return
      */
     @ClientLogin
-    @GetMapping("/publish/list")
+    @GetMapping("/publish/list/")
     public FeedResponseVO getPublishList(@RequestParam("user_id") Long userId, @RequestParam("token") String token, UserLoginDTO userLoginDTO) {
         List<VideoVO> videoVOList = videoManager.getVideoVOByUserId(userId, userLoginDTO.getId());
         log.info("获取用户视频成功");
@@ -107,6 +112,8 @@ public class VideoController {
             dir.mkdirs();
         }
         File videoFile = new File(dir, video.getOriginalFilename());
+
+
         log.info("视频上传开始，文件名:{}", video.getOriginalFilename());
 
         try {
@@ -120,21 +127,46 @@ public class VideoController {
 
         String coverName = video.getOriginalFilename().substring(0, video.getOriginalFilename().lastIndexOf("."))
                 + "Cover.jpg";
-        String coverUrl = PathConstant.coverSavePath + '/' + coverName;
+        String coverPath = PathConstant.coverSavePath + '/' + coverName;
         log.info("视频封面上传开始，文件名:{}", coverName);
         try {
-            VideoUtils.fetchPic(videoFile, coverUrl);
+            VideoUtils.fetchPic(videoFile, coverPath);
         } catch (Exception e) {
             throw new CommonException("上传视频封面失败");
         }
+
+        // 保存视频到OSS
+        log.info("视频上传到OSS，文件名:{}", video.getOriginalFilename());
+
+        String videoOSSPath = "video/" + video.getOriginalFilename();// 保存在OSS中的路径
+        String videoOSSUrl = PathConstant.videoOSSPath + video.getOriginalFilename();// 视频访问路径
+        try {
+            AliOSSUtils.uploadFile(videoFile.getAbsolutePath(), videoOSSPath);
+        } catch (IOException e) {
+            throw new CommonException("上传视频到OSS失败");
+        }
+        // 保存视频封面到OSS
+        log.info("视频封面上传到OSS，文件名:{}", video.getOriginalFilename());
+
+        String coverOSSPath = "cover/" + coverName;// 保存在OSS中的路径
+        String coverOSSUrl = PathConstant.coverOSSPath + coverName;// 视频封面访问路径
+        try {
+            AliOSSUtils.uploadFile(coverPath, coverOSSPath);
+        } catch (IOException e) {
+            throw new CommonException("上传视频封面到OSS失败");
+        }
+
         // 保存视频实体到数据库
         Video videoEntity = new Video();
         videoEntity.setAuthorId(userLoginDTO.getId());
-        videoEntity.setCoverUrl(PathConstant.coverBathPath + coverName);
-        videoEntity.setPlayUrl(PathConstant.videoBathPath + video.getOriginalFilename());
+        videoEntity.setCoverUrl(coverOSSUrl);
+        videoEntity.setPlayUrl(videoOSSUrl);
         videoEntity.setTitle(title);
-        log.info("视频封面上传开始，文件名:{}", title);
+        log.info("保存视频实体到数据库，文件名:{}", title);
         videoService.save(videoEntity);
+
+        userService.updateWorkCountById(1,userLoginDTO.getId());
         return BaseResponseVO.success();
+
     }
 }

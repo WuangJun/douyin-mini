@@ -26,5 +26,9 @@ public interface UserService extends IService<User> {
      */
     public UserDTO getUserById(Long userId);
 
-    public UserVO getUserVOById(Long userId);
+    public void updateFavoriteCountById(Integer flag,Long userId);
+
+    public void updateTotalFavoriteById(Integer flag,Long userId);
+
+    public void updateWorkCountById(Integer flag,Long userId);
 }

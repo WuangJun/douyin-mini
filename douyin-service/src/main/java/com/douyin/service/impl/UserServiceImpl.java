@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.douyin.common.dto.UserDTO;
 import com.douyin.common.vo.UserVO;
 import com.douyin.entity.User;
+import com.douyin.entity.Video;
 import com.douyin.exception.CommonException;
 import com.douyin.mapper.UserMapper;
 import com.douyin.service.UserService;
@@ -62,18 +63,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userDTO;
     }
 
+    /**
+     * 更新用户点赞总数
+     * @param flag
+     * @param userId
+     */
     @Override
-    public UserVO getUserVOById(Long userId) {
-        if (userId == null) {
-            throw new CommonException("用户ID为空");
+    public void updateFavoriteCountById(Integer flag,Long userId) {
+        User user = getById(userId);
+        if (flag==1){
+            user.setFavoriteCount(user.getFavoriteCount()+1);
+        }else if(flag==-1){
+            user.setFavoriteCount(user.getFavoriteCount()-1);
         }
-        User user = this.getById(userId);
-        UserVO userVO = new UserVO();
-        userVO.setId(user.getId());
-        userVO.setName(user.getUsername());
-        userVO.setFollow_count(0);
-        userVO.setFollower_count(0);
-        userVO.set_follow(false);
-        return userVO;
+        updateById(user);
     }
+
+    /**
+     * 更新用户获赞总数
+     * @param flag
+     * @param userId
+     */
+    @Override
+    public void updateTotalFavoriteById(Integer flag,Long userId) {
+        User user = getById(userId);
+        if (flag==1){
+            user.setTotalFavorite(user.getTotalFavorite()+1);
+        }else if(flag==-1){
+            user.setTotalFavorite(user.getTotalFavorite()-1);
+        }
+        updateById(user);
+    }
+
+    /**
+     * 更新作品总数
+     * @param flag
+     * @param userId
+     */
+    @Override
+    public void updateWorkCountById(Integer flag,Long userId) {
+        User user = getById(userId);
+        if (flag==1){
+            user.setWorkCount(user.getWorkCount()+1);
+        }else if(flag==-1){
+            user.setWorkCount(user.getWorkCount()-1);
+        }
+        updateById(user);
+    }
+
 }

@@ -36,7 +36,7 @@ public class UserController {
      * @param password
      * @return
      */
-    @PostMapping("/register")
+    @PostMapping("/register/")
     public UserResponseVO register(@RequestParam("username") String username, @RequestParam("password") String password) {
         return userManager.register(username, password);
     }
@@ -48,7 +48,7 @@ public class UserController {
      * @param password
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping("/login/")
     public UserResponseVO login(@RequestParam("username") String username, @RequestParam("password") String password) {
         return userManager.login(username, password);
     }
@@ -64,9 +64,7 @@ public class UserController {
     @GetMapping("/")
     public UserInfoResponseVO getUserInfo(@RequestParam("user_id") Long userId, @RequestParam("token") String token, UserLoginDTO userLoginDTO) {
         log.info("开始查询用户{}的信息", userLoginDTO.getUsername());
-        UserVO userVo = new UserVO();
-        userVo.setId(userLoginDTO.getId());
-        userVo.setName(userLoginDTO.getUsername());
-        return UserInfoResponseVO.success(userVo);
+        UserVO userVO = userManager.getUserVOById(userId);
+        return UserInfoResponseVO.success(userVO);
     }
 }

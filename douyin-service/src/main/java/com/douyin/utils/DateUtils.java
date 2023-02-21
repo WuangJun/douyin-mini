@@ -16,6 +16,18 @@ import java.util.Locale;
 public class DateUtils {
 
     /**
+     * Date类型转化为String
+     * @param date
+     * @return
+     */
+    public static String getDate2String(Date date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+        String creatDate = dateFormat.format(date);
+        return creatDate;
+
+    }
+
+    /**
      * long型转换为日期时间型
      *
      * @param longtime

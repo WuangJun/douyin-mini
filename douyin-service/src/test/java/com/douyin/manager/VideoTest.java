@@ -5,6 +5,7 @@ import com.douyin.common.constants.PathConstant;
 import com.douyin.entity.Video;
 import com.douyin.exception.CommonException;
 import com.douyin.service.VideoService;
+import com.douyin.utils.AliOSSUtils;
 import com.douyin.utils.DateUtils;
 import com.douyin.utils.VideoUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -100,10 +101,29 @@ public class VideoTest {
         // 保存视频实体到数据库
         Video videoEntity = new Video();
         videoEntity.setAuthorId(userId);
-        videoEntity.setCoverUrl(PathConstant.coverBathPath + coverName);
-        videoEntity.setPlayUrl(PathConstant.videoBathPath + video.getOriginalFilename());
+        // videoEntity.setCoverUrl(PathConstant.coverBathPath + coverName);
+        // videoEntity.setPlayUrl(PathConstant.videoBathPath + video.getOriginalFilename());
         videoEntity.setTitle(title);
         log.info("视频封面上传开始，文件名:{}", title);
         videoService.save(videoEntity);
     }
-}
+
+    @Test
+    public void ossTest() throws IOException {
+
+        Long userId = 1627290531398959106L;
+        String title = "指南村222！！！";
+        String fileName = "d421c54dfd03d0e198a731ee42e3d5b9.mp4";
+        // 视频byte流
+        File file = new File("C:/Users/wangjun/Desktop/", fileName);
+        MultipartFile video = new MockMultipartFile(
+                fileName, //文件名
+                fileName, //originalName 相当于上传文件在客户机上的文件名
+                // ContentType.APPLICATION_OCTET_STREAM.toString(), //文件类型
+                "application/octet-stream",
+                new FileInputStream(file) //文件流
+        );
+        AliOSSUtils.uploadFileStream(video, "video/zhinancun.mp4");
+    }
+
+    }

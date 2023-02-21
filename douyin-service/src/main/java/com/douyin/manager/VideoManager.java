@@ -10,6 +10,7 @@ import com.douyin.service.UserService;
 import com.douyin.service.VideoService;
 import com.douyin.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,22 +65,22 @@ public class VideoManager {
         log.info("查询视频成功！");
         List<VideoVO> videoVos = new ArrayList<>(videoList.size());
         for (Video video : videoList) {
-            VideoVO videoVo = videoConvertToVideoVO(video);
-
+            VideoVO videoVO = new VideoVO();
+            BeanUtils.copyProperties(video,videoVO);
             // 没登录的人无法点赞
             if (loginUserId == null) {
-                videoVo.set_favorite(false);
+                videoVO.set_favorite(false);
             } else {
-                Favorite favorite = favoriteService.getByUserIdAndVideoId(loginUserId, video.getId().toString());
+                Favorite favorite = favoriteService.getByUserIdAndVideoId(loginUserId, video.getId());
                 if (favorite == null) {
-                    videoVo.set_favorite(false);
+                    videoVO.set_favorite(false);
                 } else {
-                    videoVo.set_favorite(favorite.getIsDeleted() == 0);
+                    videoVO.set_favorite(favorite.getIsDeleted() == 0);
                 }
             }
-            videoVo.setAuthor(userService.getUserVOById(video.getAuthorId()));
+            videoVO.setAuthor(userManager.getUserVOById(video.getAuthorId()));
 
-            videoVos.add(videoVo);
+            videoVos.add(videoVO);
 
         }
         return videoVos;
@@ -93,10 +94,8 @@ public class VideoManager {
      * @return
      */
     public List<VideoVO> getVideoVOByUserId(Long userId, Long loginUserId) {
-        LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Video::getAuthorId, userId);
-        queryWrapper.orderByDesc(Video::getCreatedTime);
-        List<Video> videoList = videoService.list(queryWrapper);
+
+        List<Video> videoList = videoService.getVideoListByUserId(userId);
         if (videoList.isEmpty()) {
             log.info("当前没有视频信息！");
             return new ArrayList<>();
@@ -104,39 +103,21 @@ public class VideoManager {
         log.info("查询视频成功！");
         List<VideoVO> videoVos = new ArrayList<>(videoList.size());
         for (Video video : videoList) {
-            VideoVO videoVo = videoConvertToVideoVO(video);
+            VideoVO videoVO = new VideoVO();
+            BeanUtils.copyProperties(video,videoVO);
 
-            Favorite favorite = favoriteService.getByUserIdAndVideoId(loginUserId, video.getId().toString());
+            Favorite favorite = favoriteService.getByUserIdAndVideoId(loginUserId, video.getId());
             if (favorite == null) {
-                videoVo.set_favorite(false);
+                videoVO.set_favorite(false);
             } else {
-                videoVo.set_favorite(favorite.getIsDeleted() == 0);
+                videoVO.set_favorite(favorite.getIsDeleted() == 0);
             }
-            videoVo.setAuthor(userService.getUserVOById(video.getAuthorId()));
-            videoVos.add(videoVo);
+            videoVO.setAuthor(userManager.getUserVOById(video.getAuthorId()));
+            videoVos.add(videoVO);
         }
         return videoVos;
     }
 
-    /**
-     * 将video转换为videoVO
-     *
-     * @param video
-     * @return
-     */
-    static VideoVO videoConvertToVideoVO(Video video) {
-        if (video == null) {
-            return null;
-        }
-        VideoVO videoVo = new VideoVO();
-        videoVo.setId(video.getId());
-        videoVo.setPlay_url(video.getPlayUrl());
-        videoVo.setCover_url(video.getCoverUrl());
-        videoVo.setFavorite_count(video.getFavoriteCount());
-        videoVo.setComment_count(video.getCommentCount());
-        videoVo.setTitle(video.getTitle());
-        return videoVo;
-    }
 
 
 }

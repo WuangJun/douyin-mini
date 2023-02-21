@@ -11,5 +11,9 @@ public interface VideoService extends IService<Video> {
 
     List<Video> getPublishVideoList(Date latestTime);
 
+    List<Video> getVideoListByUserId(Long userId);
+
     void updateFavoriteCountById(Integer flag,Long videoId);
+
+    void updateCommentCountById(Integer flag,Long videoId);
 }

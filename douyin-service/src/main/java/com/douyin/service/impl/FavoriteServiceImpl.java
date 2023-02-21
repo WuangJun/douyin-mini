@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> implements FavoriteService {
 
-    @Autowired
-    private FavoriteMapper favoriteMapper;
 
     /**
      * 通过用户Id和视频Id获取喜爱数据
@@ -27,8 +25,10 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
      * @return
      */
     @Override
-    public Favorite getByUserIdAndVideoId(Long userId, String videoId) {
-        return favoriteMapper.getByUserIdAndVideoId(userId, videoId);
+    public Favorite getByUserIdAndVideoId(Long userId, Long videoId) {
+        LambdaQueryWrapper<Favorite> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Favorite::getVideoId,videoId).eq(Favorite::getFavoriteUserId,userId);
+        return getOne(queryWrapper);
     }
 
     /**

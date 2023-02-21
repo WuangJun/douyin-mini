@@ -41,6 +41,25 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     /**
+     * 根据用户id查找所有视频
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Video> getVideoListByUserId(Long userId) {
+        try {
+            LambdaQueryWrapper<Video> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Video::getAuthorId, userId);
+            queryWrapper.orderByDesc(Video::getCreatedTime);
+            List<Video> videoList = list(queryWrapper);
+            return videoList;
+        }catch (Exception e){
+            throw new CommonException("查询用户视频列表错误");
+        }
+
+    }
+
+    /**
      * 更新视频点赞总数
      * @param flag
      * @param videoId
@@ -52,6 +71,22 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             video.setFavoriteCount(video.getFavoriteCount()+1);
         }else if(flag==-1){
             video.setFavoriteCount(video.getFavoriteCount()-1);
+        }
+        updateById(video);
+    }
+
+    /**
+     * 更新视频评论总数
+     * @param flag
+     * @param videoId
+     */
+    @Override
+    public void updateCommentCountById(Integer flag,Long videoId) {
+        Video video = getById(videoId);
+        if (flag==1){
+            video.setCommentCount(video.getCommentCount()+1);
+        }else if(flag==-1){
+            video.setCommentCount(video.getCommentCount()-1);
         }
         updateById(video);
     }

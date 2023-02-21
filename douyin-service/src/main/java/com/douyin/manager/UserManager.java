@@ -3,11 +3,14 @@ package com.douyin.manager;
 import com.douyin.common.dto.UserLoginDTO;
 import com.douyin.common.dto.UserDTO;
 import com.douyin.common.vo.UserResponseVO;
+import com.douyin.common.vo.UserVO;
+import com.douyin.entity.User;
 import com.douyin.exception.CommonException;
 import com.douyin.service.UserService;
 import com.douyin.utils.MD5Utils;
 import com.douyin.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,5 +115,24 @@ public class UserManager {
         userLoginDTO.setId(userId);
         userLoginDTO.setUsername(username);
         return userLoginDTO;
+    }
+
+    /**
+     * 根据Id查询userVO
+     * @param userId
+     * @return
+     */
+    public UserVO getUserVOById(Long userId) {
+        if (userId == null) {
+            throw new CommonException("用户ID为空");
+        }
+        User user = userService.getById(userId);
+        if(user==null){
+            throw new CommonException("该用户不存在，ID为："+userId);
+        }
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user,userVO);
+        userVO.set_follow(false);
+        return userVO;
     }
 }

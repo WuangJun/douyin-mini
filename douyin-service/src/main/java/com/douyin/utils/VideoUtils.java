@@ -65,6 +65,8 @@ public class VideoUtils {
         ff.stop();
     }
 
+
+
     /**
      * 获取视频时长，单位为秒
      * @param file 即为视频地址

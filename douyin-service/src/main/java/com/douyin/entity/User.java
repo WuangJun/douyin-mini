@@ -1,6 +1,5 @@
 package com.douyin.entity;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,6 +16,16 @@ public class User implements Serializable {
     private Long id;
 
     private String username;
+
+    private Long followCount; //关注总数
+
+    private Long followerCount; //粉丝总数
+
+    private Long totalFavorite; //获赞总数
+
+    private Long workCount; //作品总数
+
+    private Long favoriteCount; //点赞总数
 
     private String password;
 

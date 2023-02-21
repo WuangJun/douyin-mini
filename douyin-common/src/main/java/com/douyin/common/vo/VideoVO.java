@@ -1,6 +1,8 @@
 package com.douyin.common.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,23 +15,26 @@ import java.io.Serializable;
 @Data
 public class VideoVO implements Serializable {
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     private UserVO author;
 
-    private String play_url; // 视频地址
+    @JsonProperty(value = "play_url")
+    private String playUrl; //视频地址
 
-    private String cover_url; // 封面地址
+    @JsonProperty(value = "cover_url")
+    private String coverUrl; //封面地址
 
-    private Integer favorite_count;
+    @JsonProperty(value = "favorite_count")
+    private Integer favoriteCount; //获赞总数
 
-    private Integer comment_count;
+    @JsonProperty(value = "comment_count")
+    private Integer commentCount; //评论总数
+
+    @JsonProperty(value = "is_favorite")
     private boolean is_favorite;
 
     private String title; // 视频标题
 
-    @JsonProperty(value = "is_favorite")
-    public boolean isIs_favorite() {
-        return is_favorite;
-    }
 }
